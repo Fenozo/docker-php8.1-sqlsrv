@@ -88,8 +88,8 @@ RUN docker-php-ext-enable imagick
 
 RUN pecl uninstall -r sqlsrv
 RUN pecl uninstall -r pdo_sqlsrv
-RUN pecl -d php_suffix=7.2 install sqlsrv
-RUN pecl -d php_suffix=7.2 install pdo_sqlsrv
+RUN pecl -d php_suffix=8.1 install sqlsrv
+RUN pecl -d php_suffix=8.1 install pdo_sqlsrv
 RUN service apache2 restart
 
 ADD conf.d/php.ini /etc/php/8.1/php.ini

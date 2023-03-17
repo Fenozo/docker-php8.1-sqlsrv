@@ -108,11 +108,6 @@ RUN ln -s /etc/apache2/sites-available/site.conf /etc/apache2/sites-enabled/site
 
 ENV ACCEPT_EULA=Y
 
-# Install prerequisites required for tools and extensions installed later on.
-
-RUN apt-get update
-RUN apt-get install -y su-exec
-
 # Install prerequisites for the sqlsrv and pdo_sqlsrv PHP extensions.
 RUN curl -O https://download.microsoft.com/download/e/4/e/e4e67866-dffd-428c-aac7-8d28ddafb39b/msodbcsql17_17.7.1.1-1_amd64.apk \
     && curl -O https://download.microsoft.com/download/e/4/e/e4e67866-dffd-428c-aac7-8d28ddafb39b/mssql-tools_17.7.1.1-1_amd64.apk \

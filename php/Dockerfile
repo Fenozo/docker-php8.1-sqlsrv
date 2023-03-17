@@ -85,6 +85,9 @@ RUN echo extension=memcached.so >> /usr/local/etc/php/conf.d/memcached.ini
 RUN pecl install imagick
 RUN docker-php-ext-enable imagick
 
+RUN pecl install sqlsrv
+RUN pecl install pdo_sqlsrv
+
 ADD conf.d/php.ini /etc/php/8.1/php.ini
 ADD conf.d/xdebug.ini /etc/php/8.1/xdebug.ini
 

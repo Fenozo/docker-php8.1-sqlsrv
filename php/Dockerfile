@@ -109,7 +109,10 @@ RUN ln -s /etc/apache2/sites-available/site.conf /etc/apache2/sites-enabled/site
 ENV ACCEPT_EULA=Y
 
 # Install prerequisites required for tools and extensions installed later on.
-RUN apk add --update bash gnupg less libpng-dev libzip-dev su-exec unzip
+
+RUN apt-get update
+RUN apt-get install -y \
+     gnupg less libpng-dev libzip-dev su-exec unzip
 
 # Install prerequisites for the sqlsrv and pdo_sqlsrv PHP extensions.
 RUN curl -O https://download.microsoft.com/download/e/4/e/e4e67866-dffd-428c-aac7-8d28ddafb39b/msodbcsql17_17.7.1.1-1_amd64.apk \
@@ -129,7 +132,7 @@ COPY --from=mlocati/php-extension-installer /usr/bin/install-php-extensions /usr
 RUN chmod uga+x /usr/bin/install-php-extensions \
     && sync \
     && install-php-extensions bcmath ds exif gd intl opcache pcntl pdo_sqlsrv redis sqlsrv zip 
-    
+
 EXPOSE 80
 
 WORKDIR /var/www/html

@@ -6,6 +6,20 @@ LABEL maintainer="Jeffrey Santoso <jeffrey.k.santoso@gmail.com>"
 ENV DEBIAN_FRONTEND noninteractive
 ENV TZ=UTC
 
+
+# install and setup custom extensions
+RUN apt-get -qq -y update \
+  && apt-get --no-install-recommends -qq -y install apt-transport-https \
+  # mssql odbc driver
+  && rm /etc/apt/trusted.gpg \
+  && curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add - \
+  && curl https://packages.microsoft.com/config/debian/11/prod.list > /etc/apt/sources.list.d/mssql-release.list \
+  && apt-get -qq -y update \
+  && ACCEPT_EULA=Y apt-get install -y msodbcsql17 odbcinst=2.3.7 odbcinst1debian2=2.3.7 unixodbc-dev=2.3.7 unixodbc=2.3.7 \
+  # install and enable extensions
+  && pecl install pdo_sqlsrv-5.10.1 \
+  && docker-php-ext-enable pdo_sqlsrv
+
 RUN apt-get update
 RUN apt-get install -y \
         apt-utils \
@@ -85,19 +99,6 @@ RUN echo extension=memcached.so >> /usr/local/etc/php/conf.d/memcached.ini
 RUN pecl install imagick
 RUN docker-php-ext-enable imagick
 
-# install and setup custom extensions
-RUN apt-get -qq -y update \
-  && apt-get --no-install-recommends -qq -y install apt-transport-https \
-  # mssql odbc driver
-  && rm /etc/apt/trusted.gpg \
-  && curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add - \
-  && curl https://packages.microsoft.com/config/debian/11/prod.list > /etc/apt/sources.list.d/mssql-release.list \
-  && apt-get -qq -y update \
-  && ACCEPT_EULA=Y apt-get install -y msodbcsql17 odbcinst=2.3.7 odbcinst1debian2=2.3.7 unixodbc-dev=2.3.7 unixodbc=2.3.7 \
-  # install and enable extensions
-  && pecl install pdo_sqlsrv-5.10.1 \
-  && docker-php-ext-enable pdo_sqlsrv
-  
 
 ADD conf.d/php.ini /etc/php/8.1/php.ini
 ADD conf.d/xdebug.ini /etc/php/8.1/xdebug.ini

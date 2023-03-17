@@ -8,8 +8,8 @@ ENV TZ=UTC
 
 
 # install and setup custom extensions
-RUN apt-get -qq -y update \
-  && apt-get --no-install-recommends -qq -y install apt-transport-https \
+RUN apt-get  update -y\
+  && apt-get --no-install-recommends install apt-transport-https  -y \
   # mssql odbc driver
   && rm /etc/apt/trusted.gpg \
   && curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add - \

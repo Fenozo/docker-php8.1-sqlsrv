@@ -23,7 +23,7 @@ COPY --from=mlocati/php-extension-installer /usr/bin/install-php-extensions /usr
 RUN chmod uga+x /usr/bin/install-php-extensions \
     && sync \
     && install-php-extensions bcmath ds exif gd intl opcache pcntl pdo_sqlsrv redis sqlsrv zip
-    
+
 WORKDIR /var/www/html
 
 LABEL maintainer="Jeffrey Santoso <jeffrey.k.santoso@gmail.com>"
@@ -110,11 +110,6 @@ RUN echo extension=memcached.so >> /usr/local/etc/php/conf.d/memcached.ini
 RUN pecl install imagick
 RUN docker-php-ext-enable imagick
 
-RUN add-apt-repository ppa:ondrej/php -y \
-        apt-get update \
-        apt-get install php8.1 php8.1-dev php8.1-xml -y --allow-unauthenticated
-RUN pecl install sqlsrv
-RUN pecl install pdo_sqlsrv
 
 ADD conf.d/php.ini /etc/php/8.1/php.ini
 ADD conf.d/xdebug.ini /etc/php/8.1/xdebug.ini

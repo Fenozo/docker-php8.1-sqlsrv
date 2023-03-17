@@ -85,6 +85,13 @@ RUN echo extension=memcached.so >> /usr/local/etc/php/conf.d/memcached.ini
 RUN pecl install imagick
 RUN docker-php-ext-enable imagick
 
+
+RUN pecl uninstall -r sqlsrv
+RUN pecl uninstall -r pdo_sqlsrv
+RUN pecl -d php_suffix=7.2 install sqlsrv
+RUN pecl -d php_suffix=7.2 install pdo_sqlsrv
+RUN service apache2 restart
+
 ADD conf.d/php.ini /etc/php/8.1/php.ini
 ADD conf.d/xdebug.ini /etc/php/8.1/xdebug.ini
 
@@ -105,27 +112,6 @@ COPY site.conf /etc/apache2/sites-available/site.conf
 RUN ln -s /etc/apache2/sites-available/site.conf /etc/apache2/sites-enabled/site.conf
 
 
-
-ENV ACCEPT_EULA=Y
-
-# Install prerequisites for the sqlsrv and pdo_sqlsrv PHP extensions.
-RUN curl -O https://download.microsoft.com/download/e/4/e/e4e67866-dffd-428c-aac7-8d28ddafb39b/msodbcsql17_17.7.1.1-1_amd64.apk \
-    && curl -O https://download.microsoft.com/download/e/4/e/e4e67866-dffd-428c-aac7-8d28ddafb39b/mssql-tools_17.7.1.1-1_amd64.apk \
-    && curl -O https://download.microsoft.com/download/e/4/e/e4e67866-dffd-428c-aac7-8d28ddafb39b/msodbcsql17_17.7.1.1-1_amd64.sig \
-    && curl -O https://download.microsoft.com/download/e/4/e/e4e67866-dffd-428c-aac7-8d28ddafb39b/mssql-tools_17.7.1.1-1_amd64.sig \
-    && curl https://packages.microsoft.com/keys/microsoft.asc  | gpg --import - \
-    && gpg --verify msodbcsql17_17.7.1.1-1_amd64.sig msodbcsql17_17.7.1.1-1_amd64.apk \
-    && gpg --verify mssql-tools_17.7.1.1-1_amd64.sig mssql-tools_17.7.1.1-1_amd64.apk \
-    && apk add --allow-untrusted msodbcsql17_17.7.1.1-1_amd64.apk mssql-tools_17.7.1.1-1_amd64.apk \
-    && rm *.apk *.sig
-
-# Retrieve the script used to install PHP extensions from the source container.
-COPY --from=mlocati/php-extension-installer /usr/bin/install-php-extensions /usr/bin/install-php-extensions
-
-# Install required PHP extensions and all their prerequisites available via apt.
-RUN chmod uga+x /usr/bin/install-php-extensions \
-    && sync \
-    && install-php-extensions bcmath ds exif gd intl opcache pcntl pdo_sqlsrv redis sqlsrv zip 
 
 EXPOSE 80
 

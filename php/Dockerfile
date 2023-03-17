@@ -22,17 +22,7 @@ COPY --from=mlocati/php-extension-installer /usr/bin/install-php-extensions /usr
 # Install required PHP extensions and all their prerequisites available via apt.
 RUN chmod uga+x /usr/bin/install-php-extensions \
     && sync \
-    && install-php-extensions bcmath ds exif gd intl opcache pcntl pdo_sqlsrv redis sqlsrv zip
-
-WORKDIR /var/www/html
-
-LABEL maintainer="Jeffrey Santoso <jeffrey.k.santoso@gmail.com>"
-
-ENV DEBIAN_FRONTEND noninteractive
-ENV TZ=UTC
-
-RUN apt-get update
-RUN apt-get install -y \
+    && install-php-extensions bcmath ds exif gd intl opcache pcntl pdo_sqlsrv redis sqlsrv zip \
         apt-utils \
         vim \
         libpng-dev \
@@ -58,11 +48,18 @@ RUN apt-get install -y \
         imagemagick \
         lftp \
         poppler-utils \
-        zip \
         pdftk \
         expect \
         mkisofs \
         libmagickwand-dev
+
+WORKDIR /var/www/html
+
+LABEL maintainer="Jeffrey Santoso <jeffrey.k.santoso@gmail.com>"
+
+ENV DEBIAN_FRONTEND noninteractive
+ENV TZ=UTC
+
 
 RUN  curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
